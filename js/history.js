@@ -69,7 +69,24 @@ export const saveHistory = (history) => {
  * @returns {Array} 업데이트된 기록 배열
  */
 export const addHistory = (expression, result) => {
-  // 💡 [과제 7] 여기에 코드를 작성하세요.
+  // 1. 기존 기록 불러오기
+  const history = loadHistory();
+
+  // 새로 저장할 항목 만들기
+  const newItem = {
+    expression,
+    result,
+    date: new Date().toLocaleString("ko-KR"),
+  };
+
+  // 2. 새 항목을 맨 앞에 추가
+  const updatedHistory = [newItem, ...history];
+
+  // 3. 저장
+  saveHistory(updatedHistory);
+
+  // 4. 업데이트된 배열 반환
+  return updatedHistory;
 };
 
 // ── 도전 2: 기록 개별 삭제 (선택 과제) ──────────────────────
