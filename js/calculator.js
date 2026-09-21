@@ -166,12 +166,14 @@ export const calculate = () => {
  * justCalculated 상태(계산 직후)라면 전체를 초기화합니다.
  */
 export const deleteLast = () => {
-  // 💡 [과제 4] 아래 규칙에 따라 코드를 작성하세요.
-  //
-  // 규칙 1. justCalculated가 true이면 전체 초기화 (clearAll 호출)
-  //
-  // 규칙 2. 그렇지 않으면 expression의 마지막 글자 하나만 제거
-  //         (힌트: expression.slice(0, -1))
+  // 1. 방금 계산이 끝난 상태라면 전체 초기화
+  if (justCalculated) {
+    clearAll();
+    return;
+  }
+
+  // 2. 아니면 마지막 글자 하나만 제거
+  expression = expression.slice(0, -1);
 
   updateDisplay();
 };
