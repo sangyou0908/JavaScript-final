@@ -4,7 +4,7 @@
 // ============================================================
 
 const STORAGE_KEY = "calc_history";
-const MAX_COUNT   = 20;
+const MAX_COUNT = 20;
 
 // ── 과제 5: 기록 불러오기 ────────────────────────────────────
 /**
@@ -18,10 +18,16 @@ const MAX_COUNT   = 20;
  * @returns {Array} 기록 배열
  */
 export const loadHistory = () => {
-    // 💡 [과제 5] 여기에 코드를 작성하세요.
+  // 1. localStorage에서 값 가져오기
+  const savedHistory = localStorage.getItem(STORAGE_KEY);
 
+  // 2. 저장된 값이 없으면 빈 배열 반환
+  if (savedHistory === null) {
+    return [];
+  }
 
-
+  // 3. 저장된 값이 있으면 배열로 변환해서 반환
+  return JSON.parse(savedHistory);
 };
 
 // ── 과제 6: 기록 저장 ────────────────────────────────────────
@@ -35,10 +41,14 @@ export const loadHistory = () => {
  * @param {Array} history - 저장할 기록 배열
  */
 export const saveHistory = (history) => {
-    // 💡 [과제 6] 여기에 코드를 작성하세요.
+  // 1. 최대 20개까지만 남기기
+  const limitedHistory = history.slice(0, MAX_COUNT);
 
+  // 2. 배열을 문자열로 변환
+  const stringHistory = JSON.stringify(limitedHistory);
 
-
+  // 3. localStorage에 저장
+  localStorage.setItem(STORAGE_KEY, stringHistory);
 };
 
 // ── 과제 7: 기록 항목 추가 ───────────────────────────────────
@@ -59,10 +69,24 @@ export const saveHistory = (history) => {
  * @returns {Array} 업데이트된 기록 배열
  */
 export const addHistory = (expression, result) => {
-    // 💡 [과제 7] 여기에 코드를 작성하세요.
+  // 1. 기존 기록 불러오기
+  const history = loadHistory();
 
+  // 새로 저장할 항목 만들기
+  const newItem = {
+    expression,
+    result,
+    date: new Date().toLocaleString("ko-KR"),
+  };
 
+  // 2. 새 항목을 맨 앞에 추가
+  const updatedHistory = [newItem, ...history];
 
+  // 3. 저장
+  saveHistory(updatedHistory);
+
+  // 4. 업데이트된 배열 반환
+  return updatedHistory;
 };
 
 // ── 도전 2: 기록 개별 삭제 (선택 과제) ──────────────────────
@@ -77,14 +101,11 @@ export const addHistory = (expression, result) => {
  * @returns {Array} 업데이트된 기록 배열
  */
 export const deleteHistoryItem = (index) => {
-    // 💡 [도전 2] 여기에 코드를 작성하세요.
-
-
-
+  // 💡 [도전 2] 여기에 코드를 작성하세요.
 };
 
 // ── 기록 전체 삭제 (완성 코드 — 수정 금지) ──────────────────
 export const clearHistory = () => {
-    localStorage.removeItem(STORAGE_KEY);
-    return [];
+  localStorage.removeItem(STORAGE_KEY);
+  return [];
 };
