@@ -118,22 +118,46 @@ export const appendOperator = (op) => {
  * @returns {{ expression: string, result: string } | null}
  */
 export const calculate = () => {
-  // 💡 [과제 3] 아래 규칙에 따라 코드를 작성하세요.
-  //
-  // 규칙 1. expression이 비어 있거나 연산자로 끝나면 null 반환
-  //
-  // 규칙 2. 0으로 나누기 감지 → subDisplay에 에러 메시지 표시 후 null 반환
-  //         (힌트: /\/0/.test(expression) 으로 감지)
-  //
-  // 규칙 3. 계산 성공 시:
-  //         - mainDisplay.textContent    = 결과값
-  //         - mainDisplay.style.fontSize = 결과값 길이에 따라 조정
-  //         - subDisplay.textContent     = "수식 ="
-  //         - justCalculated = true
-  //         - expression = 결과값 (이후 연산에 이어 쓸 수 있도록)
-  //
-  // 규칙 4. 반환값: { expression: 수식, result: 결과값 문자열 }
-  //         (main.js에서 기록 저장에 사용합니다)
+  // 1. expression이 비어 있으면 계산하지 않음
+  if (expression === "") {
+    return null;
+  }
+
+  // expression의 마지막 문자 확인
+  const lastChar = expression[expression.length - 1];
+
+  // 마지막 문자가 연산자인지 확인
+  const isOperator = ["+", "-", "*", "/"].includes(lastChar);
+
+  // 연산자로 끝나면 계산하지 않음
+  if (isOperator) {
+    return null;
+  }
+
+  // 2. 0으로 나누기 감지
+  if (/\/0/.test(expression)) {
+    subDisplay.textContent = "0으로 나눌 수 없습니다.";
+    return null;
+  }
+
+  // 3. 수식 계산
+  const result = Function('"use strict"; return (' + expression + ")")();
+
+  // 부동소수점 오류 방지
+  const resultString = parseFloat(result.toFixed(10)).toString();
+
+  // 계산 결과를 화면에 표시
+  mainDisplay.textContent = resultString;
+  subDisplay.textContent = expression + " =";
+
+  // 계산이 끝났다는 상태 저장
+  justCalculated = true;
+
+  // 4. 계산 기록용으로 반환
+  return {
+    expression: expression,
+    result: resultString,
+  };
 };
 
 // ── 과제 4: 마지막 문자 삭제 ────────────────────────────────
